@@ -1,16 +1,19 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { userRegister } from "../store/actions/authAction";
+import { useDispatch } from "react-redux";
 import "./register.css";
 const Register = () => {
   const [inputState, setInputState] = useState({
     userName:"",
     email:'',
     password:"",
-    confirmPassword:"",
+    passwordConfirm:"",
     image:""
   });
+  
   const [loadImage,setLoadImage] = useState('')
-
+const dispatch = useDispatch()
   const inputHandle  = (e)=>{
     setInputState({
       ...inputState,
@@ -32,8 +35,17 @@ const Register = () => {
       reader.readAsDataURL(e.target.files[0]);
   }
   const submitHandler = e =>{
+    const {userName,email,password,passwordConfirm,image} = inputState
+    console.log(inputState)
     e.preventDefault()
-    
+    const formData = new FormData()
+    formData.append('userName',userName)
+    formData.append('email',email)
+    formData.append('password',password)
+    formData.append('passwordConfirm',passwordConfirm)
+    formData.append('image',image)
+    dispatch(userRegister(formData))
+
   
   }
   return (
@@ -83,16 +95,16 @@ const Register = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="passwordConfirm">Confirm Password</label>
             <input
               type="password"
               className="form-control"
               placeholder="Confirm password"
-              id="confirmPassword"
+              id="passwordConfirm"
               autoComplete="off"
-              name="confirmPassword"
+              name="passwordConfirm"
               onChange={inputHandle}
-              value={inputState.confirmPassword}
+              value={inputState.passwordConfirm}
             />
           </div>
           <div className="form-group">

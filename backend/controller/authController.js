@@ -22,20 +22,15 @@ const upload = multer({
 
 let uploadPhoto = upload.single('image')
 const userRegister = asyncHandler(async (req, res) => {
- console.log(req.body)
+ 
 
   uploadPhoto(req, res, async (err) => {
-    const {userName,email,password,passwordConfirm} = req.body
-if(!userName || !email || !password || !passwordConfirm){
-  return res.status(201).json({message:'All field is required'})
-}
+ const duplicateEmail = await Register.findOne({email:req.body.email}).exec()
+ if(duplicateEmail){
+  res.status(401).json({message:"duplicate email please used other"})
+ }
 
-const duplicateEmail = await Register.findOne({email}).exec()
-if(duplicateEmail){
-  return res.status(201).json({message:"already registered email please use another email address"})
-}
-    console.log(req.file);
-   
+ 
     if (err) {
       return res.status(500).send({ err: err.message });
     }
@@ -44,7 +39,7 @@ if(duplicateEmail){
       return res.status(401).json({ message: "please upload file" });
     }
     const file = new Register({
-      image: req.file.filename,
+      image:req.file.filename,
       userName:req.body.userName,
       email:req.body.email,
       password:req.body.password,
