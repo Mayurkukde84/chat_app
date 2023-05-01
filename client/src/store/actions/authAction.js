@@ -15,7 +15,10 @@ export const userRegister = (data)=>{
             console.log(response.data,'data')
         } catch (error) {
             dispatch({
-
+                type:REGISTER_FAIL,
+                payload:{
+                    error:error.response.data.error.errorMessage
+                }
             })
         }
     }
